@@ -13,18 +13,27 @@ export function parseDateOnly(iso: string): Date {
   return new Date(year, (month ?? 1) - 1, day ?? 1);
 }
 
-/** Sewa di hari yang sama dihitung 1 hari. */
+/**
+ * Durasi = jumlah hari kalender **termasuk** tanggal ambil dan tanggal
+ * kembali, minimal 1 hari. Contoh: hari yang sama = 1; 4 Okt → 5 Okt = 2;
+ * 31 Des → 2 Jan = 3. Aturan ini mengikuti rencana uji TC-P01..TC-P03 dan
+ * terdokumentasi di DECISIONS.md D-014.
+ */
 export function rentalDays(startDate: string, endDate: string): number {
   const diff = Math.round(
     (parseDateOnly(endDate).getTime() - parseDateOnly(startDate).getTime()) /
       DAY_MS,
   );
-  return Math.max(1, diff);
+  return Math.max(1, diff + 1);
 }
 
 /**
- * Total harga: bulan penuh (30 hari) → minggu penuh (7 hari) → sisa hari.
- * Sengaja sederhana dan deterministik; aturan dicatat di DECISIONS.md.
+ * Total harga = opsi **termurah** di antara: (a) semua hari tarif harian,
+ * (b) paket mingguan + sisa hari harian, (c) paket bulanan dibulatkan ke atas.
+ * Dihitung identik di klien dan server dari fungsi yang sama.
+ * Pilihan termurah menjamin durasi lebih panjang tidak pernah lebih mahal
+ * dari durasi lebih pendek (mis. 29 hari harus ≤ 30 hari).
+ * Aturan lengkap: DECISIONS.md D-014.
  */
 export function computeTotal(
   days: number,
@@ -32,10 +41,12 @@ export function computeTotal(
   priceWeek: number,
   priceMonth: number,
 ): number {
-  const months = Math.floor(days / 30);
-  const weeks = Math.floor((days - months * 30) / 7);
-  const remaining = days - months * 30 - weeks * 7;
-  return months * priceMonth + weeks * priceWeek + remaining * priceDay;
+  if (days <= 0) return 0;
+  const daily = days * priceDay;
+  const weeks = Math.floor(days / 7);
+  const weekly = weeks * priceWeek + (days - weeks * 7) * priceDay;
+  const monthly = Math.ceil(days / 30) * priceMonth;
+  return Math.min(daily, weekly, monthly);
 }
 
 /** Hari ini menurut zona waktu operasional, format ISO. */

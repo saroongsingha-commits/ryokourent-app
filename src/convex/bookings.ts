@@ -55,6 +55,11 @@ export const create = mutation({
 
     const motor = MOTORS.find((m) => m.id === args.motorId);
     if (!motor) throw new ConvexError("Unit tidak ditemukan.");
+    if (motor.status === "rented") {
+      throw new ConvexError(
+        "Unit ini sedang disewa dan belum tersedia. Silakan pilih unit atau jadwal lain.",
+      );
+    }
 
     const customerName = args.customerName.trim();
     if (customerName.length < 2 || customerName.length > 100) {

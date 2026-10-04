@@ -148,6 +148,12 @@ export function BookingForm({ motor }: { motor: Motor }) {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (motor.status === "rented") {
+      toast.error(
+        "Unit ini sedang disewa dan belum tersedia. Pilih unit atau jadwal lain.",
+      );
+      return;
+    }
     const nextErrors = validate({ ...form, customerName: nameValue }, today);
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) {

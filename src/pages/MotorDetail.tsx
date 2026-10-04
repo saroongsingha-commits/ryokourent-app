@@ -144,7 +144,10 @@ export default function MotorDetail() {
                 ulasan ditinjau tim kami sebelum dipublikasikan.
               </p>
               <div className="mt-4">
-                <ReviewForm returnTo={`/motor/${motor.slug}`} />
+                <ReviewForm
+                  motorId={motor.id}
+                  returnTo={`/motor/${motor.slug}`}
+                />
               </div>
               <div className="mt-4">
                 <ReviewList motorId={motor.id} />

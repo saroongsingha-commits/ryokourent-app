@@ -144,14 +144,24 @@ ditandai `DICABUT` bila berubah.
   tanpa akun, data pelanggan tidak terlacak.
 - **Konsekuensi:** langkah daftar masuk ke alur sewa (dijelaskan di cara sewa).
 
-## D-014 — Aturan durasi dan harga
+## D-014 — Aturan durasi dan harga (diperbarui saat review)
 
 - **Status:** DISETUJUI (sementara — TODO dikonfirmasi bisnis)
-- **Keputusan:** hari yang sama = 1 hari; total = (bulan penuh ×30 hari)
-  + (minggu penuh ×7 hari) + (sisa hari × tarif harian). Dihitung identik di
-  klien dan di server (`src/lib/pricing.ts`).
-- **Konsekuensi:** bila bisnis menghendaki aturan lain (mis. mixing sederhana),
-  cukup ubah satu fungsi dan perbarui catatan ini.
+- **Keputusan:** durasi = hari kalender **termasuk** tanggal ambil dan tanggal
+  kembali, minimal 1 hari (hari yang sama = 1; 4 Okt → 5 Okt = 2;
+  31 Des → 2 Jan = 3), maksimal 30 hari. Total = **pilihan termurah** dari:
+  (a) tarif harian penuh, (b) paket mingguan + sisa hari harian,
+  (c) paket bulanan dibulatkan ke atas. Dihitung identik di klien dan server
+  lewat `src/lib/pricing.ts`.
+- **Alasan perubahan (hasil review):** aturan lama (bulan→minggu→sisa
+  berurutan) membuat durasi 28–29 hari lebih mahal dari 30 hari
+  (4×mingguan > bulanan) — bug harga; aturan durasi juga diselaraskan dengan
+  rencana uji TC-P01..TC-P03 yang mengasumsikan hitung inklusif.
+- **Verifikasi:** asersi dijalankan via `bun -e` — kasus TC-P, konsistensi
+  paket 7/30 hari semua unit, monotonitas total 1–90 hari, cek 29 ≤ 30 hari
+  (tercatat sebagai TC-024 di TESTING.md, LULUS).
+- **Konsekuensi:** bila bisnis menghendaki aturan lain, cukup ubah satu fungsi
+  dan perbarui catatan ini.
 
 ## D-015 — Bootstrap admin pertama lewat klaim mandiri
 

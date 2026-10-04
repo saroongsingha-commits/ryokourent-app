@@ -35,6 +35,7 @@ Status: `MENUNGGU` (belum dijalankan) · `LULUS` · `GAGAL` · `N/A-WordPress` (
 | TC-021 | Transisi status admin | `pending → confirmed` lalu `completed → active` | Pertama berhasil; kedua ditolak server | — | MENUNGGU | TASK-037 |
 | TC-022 | Penamaan & copy | Periksa seluruh halaman | "Ryokourent App" konsisten; tagline Malang Raya & Batu; tanpa copy placeholder lama | — | MENUNGGU | TASK-039 |
 | TC-023 | Smoke backend terdeploy | `bun convex run access:hasAdmin` · `reviews:listApproved` · `bookings:listAll` (tanpa sesi) | Dua query publik sukses; listAll ditolak server dengan pesan ConvexError | `false` · `[]` · ditolak: "Silakan masuk terlebih dahulu…" | LULUS | Dijalankan 2026-10-04 via CLI; gerbang auth terbukti |
+| TC-024 | Asersi fungsi durasi & harga | Skrip `bun -e` atas `rentalDays`/`computeTotal`: kasus TC-P01..P08, paket 7/30 hari berlaku utuh untuk semua unit, total monoton 1–90 hari, 29 hari ≤ 30 hari | Semua asersi lulus (exit 0) | `ALL_PRICING_ASSERTIONS_PASS` | LULUS | Dijalankan 2026-10-04; level fungsi — alur penuh via form = TC-P01..P08 |
 
 ## 2. Skenario booking inti (dites terhadap backend Convex — lihat D-012)
 
