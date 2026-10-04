@@ -1,17 +1,21 @@
 import { STATUS_META, type Motor } from "@/data/motors";
 import { formatRupiah } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import { Bike } from "lucide-react";
+import { ArrowRight, Bike } from "lucide-react";
+import { Link } from "react-router";
 
 /**
- * Satu record katalog. Sengaja tanpa angka stok (aturan proyek #16):
- * yang tampil hanya status teks TERSEDIA / TERBATAS / DISIWA.
+ * Satu record katalog yang mengarah ke halaman detail unit.
+ * Sengaja tanpa angka stok (aturan proyek #16): yang tampil hanya status teks.
  */
 export function MotorCard({ motor, index }: { motor: Motor; index: number }) {
   const status = STATUS_META[motor.status];
 
   return (
-    <article className="group flex flex-col overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-foreground/40">
+    <Link
+      to={`/motor/${motor.slug}`}
+      className="group flex flex-col overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-foreground/40 focus-visible:border-ring"
+    >
       <header className="flex items-center justify-between gap-3 border-b border-border bg-muted px-3 py-2 font-mono text-[11px]">
         <span className="flex min-w-0 items-center gap-2 text-muted-foreground">
           <Bike className="size-3.5 shrink-0" aria-hidden />
@@ -65,8 +69,12 @@ export function MotorCard({ motor, index }: { motor: Motor; index: number }) {
             minggu {formatRupiah(motor.priceWeek)} · bulan{" "}
             {formatRupiah(motor.priceMonth)}
           </p>
+          <p className="mt-2 inline-flex items-center gap-1 font-mono text-[11px] text-muted-foreground transition-colors group-hover:text-foreground">
+            buka detail & jadwalkan sewa
+            <ArrowRight className="size-3" aria-hidden />
+          </p>
         </div>
       </div>
-    </article>
+    </Link>
   );
 }

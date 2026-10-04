@@ -4,7 +4,7 @@ Status dokumen: FASE 0 (rencana skenario; hasil diisi saat pengujian dijalankan)
 
 Kolom: **ID | Skenario | Input | Hasil yang diharapkan | Hasil aktual | Status | Catatan**
 
-Status: `MENUNGGU` (belum dijalankan) · `LULUS` · `GAGAL` · `N/A-Pasca-v1`.
+Status: `MENUNGGU` (belum dijalankan) · `LULUS` · `GAGAL` · `N/A-WordPress` (hanya untuk skenario WordPress) · `DITUNDA` (fitur belum dibangun).
 
 ---
 
@@ -24,76 +24,91 @@ Status: `MENUNGGU` (belum dijalankan) · `LULUS` · `GAGAL` · `N/A-Pasca-v1`.
 | TC-010 | Theme terang konsisten | Cek `/`, `/auth`, `/dashboard` | Semua memakai permukaan off-white + monospace; tidak ada palet gelap; kontras teks lolos | — | MENUNGGU | Arahan desain |
 | TC-011 | Animasi | Interaksi hover/scroll di landing | Framer Motion jalan halus, tanpa layout shift mengganggu | — | MENUNGGU | — |
 | TC-012 | Aksesibilitas dasar | Keyboard tab + screen reader ringan | Fokus terlihat, urutan logis, CTA berlabel jelas | — | MENUNGGU | — |
+| TC-013 | Halaman detail unit | Buka `/motor/honda-vario-160` lalu `/motor/tidak-ada` | Slug valid tampil (spec, tarif, form jadwal, ulasan); slug asing → 404 | — | MENUNGGU | TASK-033 |
+| TC-014 | Pencarian katalog | Ketik `vario`, `listrik`, `helm`, `zzz` | Hasil tersaring benar; `zzz` → pesan "tidak ada yang cocok" | — | MENUNGGU | TASK-034 |
+| TC-015 | Booking sukses | Form valid (jadwal bebas) saat masuk akun | Booking tersimpan `pending`, kode `RKL-…` tampil, muncul di dashboard | — | MENUNGGU | TASK-035 |
+| TC-016 | Tolak rentang beririsan | Booking unit sama dengan tanggal menimpa booking pending/confirmed/active | Ditolak server dengan pesan tanggal bentrok; booking kedua tidak tersimpan | — | MENUNGGU | **risiko tertinggi** (TASK-017) |
+| TC-017 | Booking butuh akun | Buka form tanpa login | Gerbang masuk muncul dengan `returnTo` ke unit; setelah masuk, form tampil | — | MENUNGGU | D-013 |
+| TC-018 | Dashboard pengguna | Login → `/dashboard` | Dua tab; booking & ulasan tampil; batalkan mengubah status jadi DIBATALKAN | — | MENUNGGU | TASK-036 |
+| TC-019 | Gerbang admin | Buka `/admin` tanpa login, sebagai non-admin, dan saat belum ada admin | Tanpa login → RequireAuth; non-admin ditolak server; panel klaim hanya bila belum ada admin | — | MENUNGGU | TASK-037 |
+| TC-020 | Alur ulasan | Kirim ulasan 1–5 bintang; setujui dari admin | Awal MENUNGGU TINJAUAN; setelah disetujui tampil di landing & halaman unit | — | MENUNGGU | TASK-038 |
+| TC-021 | Transisi status admin | `pending → confirmed` lalu `completed → active` | Pertama berhasil; kedua ditolak server | — | MENUNGGU | TASK-037 |
+| TC-022 | Penamaan & copy | Periksa seluruh halaman | "Ryokourent App" konsisten; tagline Malang Raya & Batu; tanpa copy placeholder lama | — | MENUNGGU | TASK-039 |
+| TC-023 | Smoke backend terdeploy | `bun convex run access:hasAdmin` · `reviews:listApproved` · `bookings:listAll` (tanpa sesi) | Dua query publik sukses; listAll ditolak server dengan pesan ConvexError | `false` · `[]` · ditolak: "Silakan masuk terlebih dahulu…" | LULUS | Dijalankan 2026-10-04 via CLI; gerbang auth terbukti |
 
-## 2. Skenario booking inti (FASE 3 — pasca-v1)
+## 2. Skenario booking inti (dites terhadap backend Convex — lihat D-012)
+
+Catatan: skenario di bawah kini diuji terhadap implementasi Convex
+(`src/convex/bookings.ts` dan kawan-kannya); kolom Status diisi MENUNGGU
+sampai pengujian dijalankan, lalu diganti LULUS/GAGAL.
 
 ### 2.1 Form & validasi
 
 | ID | Skenario | Input | Hasil yang diharapkan | Hasil aktual | Status | Catatan |
 | --- | --- | --- | --- | --- | --- | --- |
-| TC-F01 | Submit kosong | Semua field kosong | Ditolak, pesan per field | — | N/A-Pasca-v1 | TASK-011 |
-| TC-F02 | Telepon invalid | `0812abc` | Ditolak, format WA diminta | — | N/A-Pasca-v1 | TASK-012 |
-| TC-F03 | Nama terlalu panjang | 500 karakter | Ditolak (maks 100) | — | N/A-Pasca-v1 | TASK-012 |
-| TC-F04 | Tanggal selesai < mulai | 2026-10-10 → 2026-10-01 | Ditolak dengan pesan jelas | — | N/A-Pasca-v1 | TASK-015 |
-| TC-F05 | Di luar jam operasional | Mulai 05:00 | Ditolak (08:00–20:00) | — | N/A-Pasca-v1 | TASK-015 |
+| TC-F01 | Submit kosong | Semua field kosong | Ditolak, pesan per field | — | MENUNGGU | TASK-011 / TASK-035 |
+| TC-F02 | Telepon invalid | `0812abc` | Ditolak, format WA diminta | — | MENUNGGU | TASK-012 |
+| TC-F03 | Nama terlalu panjang | 500 karakter | Ditolak (maks 100) | — | MENUNGGU | TASK-012 |
+| TC-F04 | Tanggal selesai < mulai | 2026-10-10 → 2026-10-01 | Ditolak dengan pesan jelas | — | MENUNGGU | TASK-015 |
+| TC-F05 | Di luar jam operasional | Mulai 05:00 | Ditolak (08:00–20:00) | — | MENUNGGU | TASK-015 |
 
 ### 2.2 Durasi & harga
 
 | ID | Skenario | Input | Hasil yang diharapkan | Hasil aktual | Status | Catatan |
 | --- | --- | --- | --- | --- | --- | --- |
-| TC-P01 | Sewa 1 hari | 4 Okt → 4 Okt | Durasi = 1 hari | — | N/A-Pasca-v1 | TASK-013 |
-| TC-P02 | Lewat tengah malam | 4 Okt → 5 Okt | Durasi = 2 hari | — | N/A-Pasca-v1 | TASK-013 |
-| TC-P03 | Lewat tahun | 31 Des → 2 Jan | Durasi benar (3 hari) | — | N/A-Pasca-v1 | TASK-013 |
-| TC-P04 | Durasi negatif | 5 Okt → 4 Okt | Ditolak sebelum kalkulasi | — | N/A-Pasca-v1 | TASK-015 |
-| TC-P05 | Harga harian | 1 hari × Rp75.000 | Total Rp75.000 | — | N/A-Pasca-v1 | TASK-014 |
-| TC-P06 | Harga mingguan | 7 hari | Total = harga mingguan | — | N/A-Pasca-v1 | TASK-014 |
-| TC-P07 | Harga bulanan | 30 hari | Total = harga bulanan | — | N/A-Pasca-v1 | TASK-014 |
-| TC-P08 | Campuran | 10 hari | Kombinasi konsisten + terdokumentasi | — | N/A-Pasca-v1 | Aturan dicatat di DECISIONS |
+| TC-P01 | Sewa 1 hari | 4 Okt → 4 Okt | Durasi = 1 hari | — | MENUNGGU | TASK-013 |
+| TC-P02 | Lewat tengah malam | 4 Okt → 5 Okt | Durasi = 2 hari | — | MENUNGGU | TASK-013 |
+| TC-P03 | Lewat tahun | 31 Des → 2 Jan | Durasi benar (3 hari) | — | MENUNGGU | TASK-013 |
+| TC-P04 | Durasi negatif | 5 Okt → 4 Okt | Ditolak sebelum kalkulasi | — | MENUNGGU | TASK-015 |
+| TC-P05 | Harga harian | 1 hari × Rp75.000 | Total Rp75.000 | — | MENUNGGU | TASK-014 |
+| TC-P06 | Harga mingguan | 7 hari | Total = harga mingguan | — | MENUNGGU | TASK-014 |
+| TC-P07 | Harga bulanan | 30 hari | Total = harga bulanan | — | MENUNGGU | TASK-014 |
+| TC-P08 | Campuran | 10 hari | Kombinasi konsisten + terdokumentasi | — | MENUNGGU | D-014 |
 
 ### 2.3 Ketersediaan & anti double booking
 
 | ID | Skenario | Input | Hasil yang diharapkan | Hasil aktual | Status | Catatan |
 | --- | --- | --- | --- | --- | --- | --- |
-| TC-A01 | Unit `rented` dipilih | Pilih unit berstatus disewa | Ditolak server-side | — | N/A-Pasca-v1 | TASK-016 |
-| TC-A02 | Rentang overlap | Booking 4–6 Okt lalu 5–7 Okt | Booking kedua ditolak, tanggal bentrok disebut | — | N/A-Pasca-v1 | TASK-017 |
-| TC-A03 | Rentang tidak overlap | 4–6 Okt lalu 7–9 Okt | Kedua booking diterima | — | N/A-Pasca-v1 | TASK-017 |
-| TC-B01 | Konkurensi | 2 submit bersamaan untuk unit & tanggal sama | Tepat satu sukses, satu gagal | — | N/A-Pasca-v1 | **Risiko tertinggi** |
-| TC-B02 | Booking `cancelled` | Rentang punya booking dibatalkan | Boleh booking ulang | — | N/A-Pasca-v1 | TASK-017 |
-| TC-B03 | Booking `completed` | Rentang lampau | Tidak menghalangi booking baru | — | N/A-Pasca-v1 | TASK-017 |
+| TC-A01 | Unit `rented` dipilih | Pilih unit berstatus disewa | Ditolak server-side | — | MENUNGGU | TASK-016 |
+| TC-A02 | Rentang overlap | Booking 4–6 Okt lalu 5–7 Okt | Booking kedua ditolak, tanggal bentrok disebut | — | MENUNGGU | TASK-017 / TC-016 |
+| TC-A03 | Rentang tidak overlap | 4–6 Okt lalu 7–9 Okt | Kedua booking diterima | — | MENUNGGU | TASK-017 |
+| TC-B01 | Konkurensi | 2 submit bersamaan untuk unit & tanggal sama | Tepat satu sukses, satu gagal | — | MENUNGGU | **Risiko tertinggi** |
+| TC-B02 | Booking `cancelled` | Rentang punya booking dibatalkan | Boleh booking ulang | — | MENUNGGU | TASK-017 |
+| TC-B03 | Booking `completed` | Rentang lampau | Tidak menghalangi booking baru | — | MENUNGGU | TASK-017 |
 
 ### 2.4 WhatsApp, penyimpanan, status
 
 | ID | Skenario | Input | Hasil yang diharapkan | Hasil aktual | Status | Catatan |
 | --- | --- | --- | --- | --- | --- | --- |
-| TC-W01 | Encode pesan | Nama + tanggal + spasi | `wa.me` URL ter-encode UTF-8, tidak putus | — | N/A-Pasca-v1 | TASK-018 |
-| TC-W02 | Nomor dari settings | Nomor placeholder | Nomor tidak di-hardcode di kode | — | N/A-Pasca-v1 | TODO nomor asli |
-| TC-S01 | Simpan booking | Data valid | Record `pending` + kode booking unik | — | N/A-Pasca-v1 | TASK-019 |
-| TC-S02 | Kode booking unik | 100 booking serentak | Tanpa duplikat | — | N/A-Pasca-v1 | TASK-019 |
-| TC-ST01 | Transisi valid | `pending → confirmed` | Berhasil + tercatat siapa/kapan | — | N/A-Pasca-v1 | TASK-023 |
-| TC-ST02 | Transisi invalid | `completed → active` | Ditolak | — | N/A-Pasca-v1 | TASK-023 |
+| TC-W01 | Encode pesan | Nama + tanggal + spasi | Pesan ringkasan terbentuk utuh (siap salin/wa.me) | — | MENUNGGU | TASK-018 (nomor masih TODO) |
+| TC-W02 | Nomor dari settings | Nomor placeholder | Nomor tidak di-hardcode di komponen | — | MENUNGGU | `src/lib/site.ts` |
+| TC-S01 | Simpan booking | Data valid | Record `pending` + kode booking unik | — | MENUNGGU | TASK-019 |
+| TC-S02 | Kode booking unik | 100 booking serentak | Tanpa duplikat | — | MENUNGGU | TASK-019 |
+| TC-ST01 | Transisi valid | `pending → confirmed` | Berhasil + tercatat siapa/kapan | — | MENUNGGU | TASK-023 |
+| TC-ST02 | Transisi invalid | `completed → active` | Ditolak | — | MENUNGGU | TASK-023 |
 
 ### 2.5 Akses & keamanan
 
 | ID | Skenario | Input | Hasil yang diharapkan | Hasil aktual | Status | Catatan |
 | --- | --- | --- | --- | --- | --- | --- |
-| TC-R01 | User biasa baca booking | Query daftar booking tanpa role | Ditolak di server | — | N/A-Pasca-v1 | TASK-021 |
-| TC-R02 | Operator ubah settings | Mutation settings sebagai operator | Ditolak (hanya admin) | — | N/A-Pasca-v1 | TASK-021 |
-| TC-R03 | Nonce/capability (target WP) | Aksi admin tanpa nonce | Ditolak | — | N/A-Pasca-v1 | Aturan #12 |
-| TC-X01 | XSS pada output | Nama motor berisi `<script>` | Dirender sebagai teks, tidak dieksekusi | — | N/A-Pasca-v1 | React escape + review |
-| TC-X02 | Input aneh | Karakter unicode, emoji, HTML | Disanitasi sebelum disimpan | — | N/A-Pasca-v1 | TASK-012 |
-| TC-DB01 | Dashboard booking | Login operator | Daftar reactive + filter status | — | N/A-Pasca-v1 | TASK-022 |
-| TC-SET01 | Simpan harga | Angka valid/nonvalid | Valid tersimpan; nonvalid ditolak | — | N/A-Pasca-v1 | TASK-024 |
+| TC-R01 | User biasa baca booking | Query daftar booking tanpa role | Ditolak di server | — | MENUNGGU | TASK-021 |
+| TC-R02 | Non-admin ubah data admin | Mutation admin sebagai non-admin | Ditolak (hanya admin) | — | MENUNGGU | TASK-037 |
+| TC-R03 | Nonce/capability (target WP) | Aksi admin tanpa nonce | Ditolak | — | N/A-WordPress | Aturan #12 |
+| TC-X01 | XSS pada output | Nama motor berisi `<script>` | Dirender sebagai teks, tidak dieksekusi | — | MENUNGGU | React escape + review |
+| TC-X02 | Input aneh | Karakter unicode, emoji, HTML | Disanitasi sebelum disimpan | — | MENUNGGU | TASK-012 |
+| TC-DB01 | Dashboard booking | Login pengguna | Daftar reactive + filter status | — | MENUNGGU | TASK-036 |
+| TC-SET01 | Simpan harga | Angka valid/nonvalid | Valid tersimpan; nonvalid ditolak | — | DITUNDA | TASK-024 (belum dibangun) |
 
 ## 3. Pengaktifan & instalasi (target WordPress — FASE 3/4)
 
 | ID | Skenario | Input | Hasil yang diharapkan | Hasil aktual | Status | Catatan |
 | --- | --- | --- | --- | --- | --- | --- |
-| TC-I01 | Aktivasi plugin | Aktifkan `ryokourent-core` | Tanpa fatal error/notice | — | N/A-Pasca-v1 | — |
-| TC-I02 | CPT muncul | Lihat wp-admin | Menu motor & penyewaan ada | — | N/A-Pasca-v1 | — |
-| TC-I03 | Field tersimpan | Isi meta motor, simpan | Nilai terbaca kembali | — | N/A-Pasca-v1 | — |
-| TC-I04 | Akses ditolak | User tanpa role buka halaman admin booking | Ditolak (capability) | — | N/A-Pasca-v1 | — |
-| TC-I05 | Child theme aktif | Aktifkan `generatepress-child` | Gaya katalog sesuai, tanpa error | — | N/A-Pasca-v1 | — |
-| TC-I06 | Mobile UI | Perangkat fisik/emulator | Booking bisa diselesaikan di mobile | — | N/A-Pasca-v1 | — |
+| TC-I01 | Aktivasi plugin | Aktifkan `ryokourent-core` | Tanpa fatal error/notice | — | N/A-WordPress | — |
+| TC-I02 | CPT muncul | Lihat wp-admin | Menu motor & penyewaan ada | — | N/A-WordPress | — |
+| TC-I03 | Field tersimpan | Isi meta motor, simpan | Nilai terbaca kembali | — | N/A-WordPress | — |
+| TC-I04 | Akses ditolak | User tanpa role buka halaman admin booking | Ditolak (capability) | — | N/A-WordPress | — |
+| TC-I05 | Child theme aktif | Aktifkan `generatepress-child` | Gaya katalog sesuai, tanpa error | — | N/A-WordPress | — |
+| TC-I06 | Mobile UI | Perangkat fisik/emulator | Booking bisa diselesaikan di mobile | — | N/A-WordPress | — |
 
 ## 4. Checklist keamanan (TASK-027)
 

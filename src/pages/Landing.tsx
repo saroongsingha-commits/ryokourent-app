@@ -5,6 +5,7 @@ import { Hero } from "@/components/landing/Hero";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { LocationSection } from "@/components/landing/LocationSection";
 import { Navbar } from "@/components/landing/Navbar";
+import { Testimonials } from "@/components/landing/Testimonials";
 import { motion } from "framer-motion";
 
 export default function Landing() {
@@ -20,6 +21,7 @@ export default function Landing() {
         <Hero />
         <Catalog />
         <HowItWorks />
+        <Testimonials />
         <FaqSection />
         <LocationSection />
       </main>

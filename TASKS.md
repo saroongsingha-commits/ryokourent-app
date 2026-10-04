@@ -314,11 +314,91 @@ fitur baru wajib punya ID sebelum diimplementasikan).
 
 ---
 
+## TASK perluasan v1.1 (arahan 2026-10-04)
+
+Fitur baru di luar blueprint awal: diberi ID lebih dulu, lalu diimplementasikan
+pada iterasi yang sama atas permintaan eksplisit (nama “Ryokourent App”,
+pengguna pelanggan bisnis, alur booking/detail/dashboard/admin/ulasan).
+
+### TASK-033 — Halaman detail satu unit
+- **Tujuan:** Buka satu unit: spesifikasi, tarif, status, ulasan, form jadwal.
+- **File:** `src/pages/MotorDetail.tsx`, route `/motor/:slug` (di `src/main.tsx`)
+- **Dependensi:** TASK-007, TASK-035
+- **Kriteria selesai:** slug valid tampil; slug asing → 404; booking & ulasan tampil.
+- **Pengujian:** TC-013 di `TESTING.md`.
+- **Risiko:** duplikasi markup dengan kartu katalog.
+- **Scope:** v1.1 — COMPLETED (pengujian visual MENUNGGU)
+
+### TASK-034 — Pencarian katalog
+- **Tujuan:** Cari unit berdasarkan nama/brand/kategori/fitur + filter kategori.
+- **File:** `src/components/landing/Catalog.tsx`
+- **Dependensi:** TASK-007
+- **Kriteria selesai:** kata kunci menyaring daftar; hasil kosong punya pesan jelas.
+- **Pengujian:** TC-014.
+- **Risiko:** pencarian hanya di klien (data masih statis) — cukup untuk v1.1.
+- **Scope:** v1.1 — COMPLETED (pengujian visual MENUNGGU)
+
+### TASK-035 — Booking/jadwal + penyimpanan backend
+- **Tujuan:** Pengguna menjadwalkan sewa; server memvalidasi, menghitung harga, menolak rentang beririsan.
+- **File:** `src/convex/schema.ts`, `src/convex/bookings.ts`, `src/lib/pricing.ts`, `src/components/booking/BookingForm.tsx`
+- **Dependensi:** TASK-004, TASK-013, TASK-014, TASK-015, TASK-016, TASK-017
+- **Kriteria selesai:** booking tersimpan `pending` + kode unik; overlap ditolak; harga dihitung ulang di server; error pakai `ConvexError` sehingga pesan sampai ke klien.
+- **Pengujian:** TC-015, TC-016, TC-017 + skenario §2 di `TESTING.md`.
+- **Risiko:** atomisitas Convex mutation menutup race; sisa risiko = aturan harga campuran (D-014) belum dikonfirmasi bisnis.
+- **Scope:** v1.1 — READY FOR REVIEW
+
+### TASK-036 — Dashboard pengguna
+- **Tujuan:** Pengguna melihat booking & ulasannya, bisa membatalkan booking.
+- **File:** `src/pages/Dashboard.tsx`
+- **Dependensi:** TASK-035, TASK-038
+- **Kriteria selesai:** dua tab (booking/ulasan), status tampil, batalkan dengan konfirmasi.
+- **Pengujian:** TC-018.
+- **Risiko:** query butuh sesi login (sudah dijaga `RequireAuth`).
+- **Scope:** v1.1 — READY FOR REVIEW
+
+### TASK-037 — Area admin
+- **Tujuan:** Admin mengelola semua: ubah status booking, moderasi ulasan.
+- **File:** `src/pages/Admin.tsx`, `src/convex/access.ts`, `src/convex/bookings.ts` (`listAll`, `updateStatus`), `src/convex/reviews.ts` (`listPending`, `moderate`)
+- **Dependensi:** TASK-035, TASK-038
+- **Kriteria selesai:** non-admin ditolak di server; transisi status valid; bootstrap admin pertama klaim mandiri (TODO produksi).
+- **Pengujian:** TC-019.
+- **Risiko:** klaim admin mandiri hanya aman untuk instalasi tunggal → lihat D-015.
+- **Scope:** v1.1 — READY FOR REVIEW
+
+### TASK-038 — Ulasan pelanggan (post content)
+- **Tujuan:** Pengguna mengirim ulasan; tampil publik setelah moderasi.
+- **File:** `src/convex/reviews.ts`, `src/components/reviews/*`, `src/components/landing/Testimonials.tsx`
+- **Dependensi:** TASK-036, TASK-037
+- **Kriteria selesai:** wajib login; 1–5 bintang; status pending; admin setujui → tampil.
+- **Pengujian:** TC-020.
+- **Risiko:** tanpa verifikasi penyewaan — disederhanakan dulu, dicatat di sini.
+- **Scope:** v1.1 — READY FOR REVIEW
+
+### TASK-039 — Penamaan & copy Ryokourent App
+- **Tujuan:** Nama “Ryokourent App”, positioning Malang Raya & Batu, nada premium-serius di seluruh halaman.
+- **File:** `index.html`, `src/lib/site.ts`, komponen landing, `src/pages/{Auth,Dashboard,NotFound}.tsx`
+- **Dependensi:** —
+- **Kriteria selesai:** satu sumber nama/tagline (`SITE`); tata bahasa Indonesia benar; tanpa copy placeholder lama.
+- **Pengujian:** TC-022.
+- **Risiko:** teks bisnis (alamat, WA) masih TODO.
+- **Scope:** v1.1 — COMPLETED
+
+### TASK-040 — Peningkatan gaya premium
+- **Tujuan:** Tombol utama tinta gelap (serius), hijau hanya untuk status/aksen.
+- **File:** `src/index.css`
+- **Dependensi:** TASK-032
+- **Kriteria selesai:** `--primary` tinta; kontras lolos; tema tetap terang.
+- **Pengujian:** TC-010.
+- **Risiko:** —
+- **Scope:** v1.1 — COMPLETED
+
+---
+
 ## Ringkasan
 
 | Metrik | Nilai |
 | --- | --- |
-| Total task | 32 (30 blueprint + 2 baru: TASK-031, TASK-032) |
-| Task v1 | 12 (001, 002, 003, 004, 005, 006, 007, 025, 026, 028-sebagian, 031, 032) |
-| Task pasca-v1 | 21 |
-| Task berisiko tertinggi | TASK-017 (double booking), TASK-021 (authorization), TASK-027 (security audit) |
+| Total task | 40 (30 blueprint + 10 baru: TASK-031…TASK-040) |
+| Task v1 / v1.1 | 20 (termasuk TASK-028 sebagian) |
+| Task pasca-v1 | 20 penuh + TASK-028 (bagian FASE 3) |
+| Task berisiko tertinggi | TASK-017 (double booking), TASK-037 (akses admin), TASK-027 (security audit) |

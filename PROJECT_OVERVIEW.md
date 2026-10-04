@@ -21,40 +21,42 @@ Tujuan jangka panjang (setelah v1):
 
 | Pengguna | Kebutuhan utama | Status v1 |
 | --- | --- | --- |
-| Calon penyewa (publik) | Melihat katalog, harga, status ketersediaan, lokasi, FAQ | Aktif |
-| Admin / operator | Masuk ke workspace terproteksi, kelola booking | Akses masuk tersedia, workspace menyusul |
+| Calon penyewa (publik) | Cari & bandingkan unit, jadwalkan sewa, pantau booking, tulis ulasan | Aktif |
+| Admin / operator | Kelola semua: ubah status booking, moderasi ulasan | Aktif (`/admin`) |
 
-Jawaban scope v1: **kedua pengguna** harus bisa masuk — publik lewat landing +
-katalog, operator lewat halaman masuk yang sudah terproteksi.
+Jawaban scope v1: **kedua pengguna** — pelanggan lewat landing, katalog, dan
+dashboard; tim bisnis lewat area admin. Nama resmi produk: **Ryokourent App**.
 
-## 3. Ruang Lingkup MVP (Versi 1)
+## 3. Ruang Lingkup MVP (Versi 1 + perluasan v1.1)
 
-Satu hal yang wajib jalan di versi 1: **landing page + katalog motor**.
+Satu hal yang wajib jalan: **landing page + katalog motor**, kini diperluas
+sesuai arahan 2026-10-04 menjadi pengalaman utuh bagi pelanggan bisnis.
 
-### 3.1 Termasuk v1
+### 3.1 Termasuk v1 / v1.1
 
-- Landing page mobile-first dengan theme Terminal terang.
-- Katalog motor: daftar unit, filter kategori, spec ringkas, harga
-  harian/mingguan/bulanan, indikator status ketersediaan.
-- Bagian FAQ dan informasi lokasi sebagai konten statis landing.
-- CTA masuk (auth) yang mengarah ke dashboard terproteksi.
-- Responsive layout untuk mobile sampai desktop.
+- Landing page mobile-first, theme Terminal terang, nada premium-serius.
+- Katalog motor dengan pencarian + filter kategori; status tanpa angka stok.
+- Halaman detail per unit: spesifikasi, tarif, status, dan ulasan.
+- Booking/jadwal online: pilih tanggal & jam, durasi dan harga dihitung
+  otomatis, rentang beririsan ditolak di server, kode booking diterbitkan.
+- Autentikasi (email OTP / tamu) dan dashboard pengguna: booking saya,
+  ulasan saya, pembatalan booking.
+- Area admin (`/admin`): ubah status booking, moderasi ulasan, bootstrap
+  admin pertama.
+- Ulasan pelanggan (posting konten) + social proof di landing.
+- FAQ dan informasi lokasi/area layanan Malang Raya & Batu.
+- Penamaan “Ryokourent App” di seluruh halaman (sumber: `src/lib/site.ts`).
 - Struktur repo + dokumen FASE 0.
 
-### 3.2 Tidak termasuk v1 (ditunda)
+### 3.2 Masih ditunda
 
-| Fitur | Task | Fase |
+| Fitur | Task | Catatan |
 | --- | --- | --- |
-| Form booking dasar | TASK-011 | FASE 2 |
-| Kalkulasi durasi & harga | TASK-013, TASK-014 | FASE 2 |
-| Validasi tanggal/jam & ketersediaan | TASK-015, TASK-016 | FASE 2 |
-| Pencegahan double booking | TASK-017 | FASE 2 |
-| Generator pesan WhatsApp | TASK-018 | FASE 2 |
-| Penyimpanan booking & status | TASK-009, TASK-010, TASK-019 | FASE 2 |
-| Role operator & pembatasan akses | TASK-020, TASK-021 | FASE 2 |
-| Dashboard booking & perubahan status | TASK-022, TASK-023 | FASE 2 |
-| Pengaturan harga & nomor WhatsApp | TASK-024 | FASE 2 |
-| Halaman detail motor | TASK-008 | FASE 2 |
+| Nomor WhatsApp asli + tautan wa.me otomatis | TASK-018 | ringkasan bisa disalin; tautan aktif setelah nomor diisi |
+| Pengaturan harga & nomor WA lewat UI admin | TASK-024 | sementara di `src/lib/site.ts` |
+| Role operator (di luar admin) | TASK-020, TASK-021 | admin dulu |
+| Foto unit & galeri | TASK-008 (sebagian) | TODO foto asli milik sendiri |
+| Pindah katalog dari data statis ke backend/CMS | D-002 | operasi tulis belum ada |
 | Pembayaran online | — | Ditunda tanpa batas (lihat aturan proyek) |
 
 ## 4. Asumsi Bisnis (sementara, ditandai TODO)

@@ -4,23 +4,23 @@ import { SectionHeading } from "./SectionHeading";
 const STEPS = [
   {
     n: "01",
-    cmd: "pilih_motor",
-    text: "Telusuri katalog, catat nama unit yang cocok dan harganya.",
+    cmd: "buat_akun",
+    text: "Daftar atau masuk menggunakan email. Kode verifikasi dikirim langsung, prosesnya selesai dalam satu menit.",
   },
   {
     n: "02",
-    cmd: "hubungi_admin",
-    text: "Konfirmasi ketersediaan lewat WhatsApp atau datang langsung ke lokasi.",
+    cmd: "pilih_unit",
+    text: "Telusuri katalog, gunakan pencarian, lalu buka halaman detail unit untuk melihat spesifikasi dan tarif.",
   },
   {
     n: "03",
-    cmd: "isi_data",
-    text: "Isi data penyewa dan tanggal sewa saat konfirmasi. Cukup nama dan nomor aktif.",
+    cmd: "tentukan_jadwal",
+    text: "Pilih tanggal dan jam ambil serta kembali. Durasi dan total biaya dihitung otomatis, tanpa tebak-tebakan.",
   },
   {
     n: "04",
-    cmd: "ambil_unit",
-    text: "Ambil motor, bawa jalan. Helm dan jas hujan ikut, tinggal gas.",
+    cmd: "konfirmasi",
+    text: "Booking tersimpan di dashboard Anda. Tim kami meninjau jadwal dan mengonfirmasi lewat WhatsApp.",
   },
 ];
 
@@ -32,7 +32,7 @@ export function HowItWorks() {
           <SectionHeading
             index="03"
             title="Cara sewa, empat langkah"
-            description="Alurnya sederhana dan bisa diselesaikan dari HP. Pemesanan online sedang disiapkan — untuk sekarang konfirmasi lewat WhatsApp atau lokasi toko."
+            description="Seluruh proses dapat diselesaikan dari HP: buat akun, pilih unit, tentukan jadwal, lalu pantau statusnya dari dashboard."
             prompt="~/cara-sewa $ cat alur.txt"
           />
         </Reveal>
@@ -73,7 +73,7 @@ export function HowItWorks() {
 
         <Reveal delay={0.1}>
           <p className="mt-6 font-mono text-[11px] leading-5 text-muted-foreground">
-            {"// syarat: SIM C aktif + identitas asli saat pengambilan (fotokopi tidak disimpan di sistem)"}
+            {"// syarat pengambilan: SIM C aktif dan identitas asli — salinan tidak disimpan di sistem"}
           </p>
         </Reveal>
       </div>

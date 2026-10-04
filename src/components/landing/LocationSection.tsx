@@ -1,32 +1,32 @@
-import { MapPin, Clock, MessageCircle, Info } from "lucide-react";
+import { MapPin, Clock, MessageCircle, Map } from "lucide-react";
+import { SITE } from "@/lib/site";
 import { Reveal } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
 
 const INFO = [
   {
+    icon: Map,
+    label: "area_layanan",
+    value: `${SITE.serviceArea} — Kota Malang, Kabupaten Malang, dan Kota Batu`,
+    todo: false,
+  },
+  {
     icon: MapPin,
-    label: "alamat",
-    // TODO: alamat resmi Ryokourent belum tersedia (lihat CONFIG.example.php)
-    value: "Jl. Contoh No. 1, Kota Contoh — patokan: depan minimarket",
+    label: "lokasi_pengambilan",
+    value: SITE.address,
     todo: true,
   },
   {
     icon: Clock,
     label: "jam_operasional",
-    value: "Setiap hari, 08.00 – 20.00 WIB",
+    value: `Setiap hari, ${SITE.hours}`,
     todo: false,
   },
   {
     icon: MessageCircle,
     label: "whatsapp",
-    value: "+62 812-3456-7890 (nomor contoh — TODO ganti nomor asli)",
+    value: SITE.whatsappDisplay,
     todo: true,
-  },
-  {
-    icon: Info,
-    label: "patokan",
-    value: "Area kota; pengantaran unit luar kota bisa dikomunikasikan dengan admin",
-    todo: false,
   },
 ];
 
@@ -36,9 +36,9 @@ export function LocationSection() {
       <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
         <Reveal>
           <SectionHeading
-            index="05"
+            index="06"
             title="Lokasi & kontak"
-            description="Ambil unit di lokasi, atau minta admin menyiapkan dulu sebelum datang."
+            description="Kami melayani seluruh Malang Raya dan Batu. Ambil unit di lokasi kami, atau minta admin menyiapkan jadwal Anda sebelum datang."
             prompt="~/lokasi $ cat kontak.txt"
           />
         </Reveal>
@@ -47,10 +47,7 @@ export function LocationSection() {
           <Reveal delay={0.06}>
             <dl className="divide-y divide-border rounded-lg border border-border bg-background">
               {INFO.map((item) => (
-                <div
-                  key={item.label}
-                  className="flex gap-3 px-4 py-4 sm:px-5"
-                >
+                <div key={item.label} className="flex gap-3 px-4 py-4 sm:px-5">
                   <item.icon
                     className="mt-0.5 size-4 shrink-0 text-ok"
                     aria-hidden

@@ -9,6 +9,7 @@ import { Link } from "react-router";
 const NAV_LINKS = [
   { href: "#katalog", label: "katalog" },
   { href: "#cara-sewa", label: "cara-sewa" },
+  { href: "#ulasan", label: "ulasan" },
   { href: "#faq", label: "faq" },
   { href: "#lokasi", label: "lokasi" },
 ];
@@ -19,19 +20,19 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-      <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
-        <Link
-          to="/"
-          onClick={() => setOpen(false)}
-          className="flex items-center gap-2 font-mono text-sm"
-        >
+      <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">          <Link
+            to="/"
+            onClick={() => setOpen(false)}
+            aria-label="Ryokourent App — beranda"
+            className="flex items-center gap-2 font-mono text-sm"
+          >
           <span className="flex size-6 items-center justify-center rounded-[3px] border border-border bg-secondary text-xs font-bold text-ok">
             $
           </span>
           <span className="font-bold tracking-tight text-foreground">
             ryokourent
           </span>
-          <span className="hidden text-muted-foreground sm:inline">.web</span>
+          <span className="text-muted-foreground">app</span>
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">

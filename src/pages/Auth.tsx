@@ -66,7 +66,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
       setError(
         error instanceof Error
           ? error.message
-          : "Failed to send verification code. Please try again.",
+          : "Gagal mengirim kode verifikasi. Silakan coba lagi.",
       );
       setIsLoading(false);
     }
@@ -86,7 +86,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
     } catch (error) {
       console.error("OTP verification error:", error);
 
-      setError("The verification code you entered is incorrect.");
+      setError("Kode verifikasi yang Anda masukkan tidak sesuai.");
       setIsLoading(false);
 
       setOtp("");
@@ -104,7 +104,11 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
     } catch (error) {
       console.error("Guest login error:", error);
       console.error("Error details:", JSON.stringify(error, null, 2));
-      setError(`Failed to sign in as guest: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      setError(
+        `Gagal masuk sebagai tamu: ${
+          error instanceof Error ? error.message : "kesalahan tidak diketahui"
+        }`,
+      );
       setIsLoading(false);
     }
   };
@@ -123,16 +127,17 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
               <div className="flex justify-center">
                     <img
                       src={logo}
-                      alt="Lock Icon"
+                      alt="Ryokourent App"
                       width={64}
                       height={64}
                       className="rounded-lg mb-4 mt-4 cursor-pointer"
                       onClick={() => navigate("/")}
                     />
                   </div>
-                <CardTitle className="text-xl">Get Started</CardTitle>
+                <CardTitle className="text-xl">Masuk ke Ryokourent App</CardTitle>
                 <CardDescription>
-                  Enter your email to log in or sign up
+                  Masukkan email Anda untuk menerima kode verifikasi —
+                  berlaku untuk pendaftaran baru maupun masuk.
                 </CardDescription>
               </CardHeader>
               <form onSubmit={handleEmailSubmit}>
@@ -174,7 +179,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                       </div>
                       <div className="relative flex justify-center text-xs uppercase">
                         <span className="bg-background px-2 text-muted-foreground">
-                          Or
+                          atau
                         </span>
                       </div>
                     </div>
@@ -187,7 +192,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                       disabled={isLoading}
                     >
                       <UserX className="mr-2 h-4 w-4" />
-                      Continue as Guest
+                      Lanjutkan sebagai tamu
                     </Button>
                   </div>
                 </CardContent>
@@ -196,9 +201,9 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
           ) : (
             <>
               <CardHeader className="text-center mt-4">
-                <CardTitle>Check your email</CardTitle>
+                <CardTitle>Periksa email Anda</CardTitle>
                 <CardDescription>
-                  We've sent a code to {step.email}
+                  Kode verifikasi sudah dikirim ke {step.email}.
                 </CardDescription>
               </CardHeader>
               <form onSubmit={handleOtpSubmit}>
@@ -235,13 +240,13 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                     </p>
                   )}
                   <p className="text-sm text-muted-foreground text-center mt-4">
-                    Didn't receive a code?{" "}
+                    Belum menerima kode?{" "}
                     <Button
                       variant="link"
                       className="p-0 h-auto"
                       onClick={() => setStep("signIn")}
                     >
-                      Try again
+                      kirim ulang
                     </Button>
                   </p>
                 </CardContent>
@@ -254,12 +259,12 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                     {isLoading ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Verifying...
+                        memverifikasi…
                       </>
                     ) : (
                       <>
-                        Verify code
-                        <ArrowRight className="ml-2 h-4 w-4" />
+                      verifikasi kode
+                      <ArrowRight className="ml-2 h-4 w-4" />
                       </>
                     )}
                   </Button>
@@ -269,8 +274,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                     onClick={() => setStep("signIn")}
                     disabled={isLoading}
                     className="w-full"
-                  >
-                    Use different email
+                  >                      ganti email
                   </Button>
                 </CardFooter>
               </form>

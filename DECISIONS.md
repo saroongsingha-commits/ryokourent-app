@@ -109,3 +109,57 @@ ditandai `DICABUT` bila berubah.
   + katalog, tidak dibutuhkan.
 - **Konsekuensi:** Endpoint pertama muncul di TASK-011 (form booking) dan wajib
   melewati review keamanan TASK-027.
+- **Diperbarui:** sejak v1.1 ada endpoint tulis Convex (booking & ulasan);
+  otorisasi dicek di server, lihat D-012.
+
+## D-011 — Nama, positioning, dan nada bahasa
+
+- **Status:** DISETUJUI (arahan 2026-10-04)
+- **Keputusan:** Nama produk **Ryokourent App**; positioning “rental motor mudah
+  dan cepat untuk wisata, kuliah, dinas, dan acara keluarga di Malang Raya &
+  Batu”; audiens = pelanggan bisnis; nada = premium dan serius (Bahasa
+  Indonesia, tata bahasa rapi, tanpa gaul berlebihan).
+- **Implementasi:** satu sumber `src/lib/site.ts` (`SITE.name`, `SITE.tagline`,
+  `SITE.serviceArea`); judul halaman di `index.html`.
+- **Konsekuensi:** semua copy baru wajib mengacu ke `SITE`, bukan string lepas.
+
+## D-012 — Booking & ulasan disimpan di backend Convex
+
+- **Status:** DISETUJUI
+- **Keputusan:** Tabel `bookings` dan `reviews` hidup di Convex (schema +
+  query/mutation), bukan localStorage maupun statis. Katalog tetap statis
+  (mempertahankan D-002).
+- **Alasan:** booking butuh atomisitas (anti double booking), otorisasi, dan
+  dashboard yang reaktif — tidak bisa dipegang data klien.
+- **Konsekuensi:** semua akses publik/tulis melewati mutation terautentikasi;
+  pesan error memakai `ConvexError` agar pesan validasi sampai ke pengguna.
+
+## D-013 — Booking dan ulasan wajib masuk akun
+
+- **Status:** DISETUJUI
+- **Keputusan:** Form booking dan ulasan hanya untuk pengguna terautentikasi
+  (email OTP atau tamu-anonim). Pengunjung melihat gerbang masuk dengan
+  `returnTo` ke halaman unit yang sedang dibuka.
+- **Alasan:** dashboard “booking saya” dan moderasi ulasan membutuhkan identitas;
+  tanpa akun, data pelanggan tidak terlacak.
+- **Konsekuensi:** langkah daftar masuk ke alur sewa (dijelaskan di cara sewa).
+
+## D-014 — Aturan durasi dan harga
+
+- **Status:** DISETUJUI (sementara — TODO dikonfirmasi bisnis)
+- **Keputusan:** hari yang sama = 1 hari; total = (bulan penuh ×30 hari)
+  + (minggu penuh ×7 hari) + (sisa hari × tarif harian). Dihitung identik di
+  klien dan di server (`src/lib/pricing.ts`).
+- **Konsekuensi:** bila bisnis menghendaki aturan lain (mis. mixing sederhana),
+  cukup ubah satu fungsi dan perbarui catatan ini.
+
+## D-015 — Bootstrap admin pertama lewat klaim mandiri
+
+- **Status:** DISETUJUI (sementara)
+- **Keputusan:** Saat belum ada user ber-role `admin`, halaman `/admin`
+  menawarkan tombol klaim; klaim hanya berhasil bila benar-benar belum ada
+  admin. Setelah itu, semua query/mutation admin menolak non-admin di server.
+- **Alternatif ditolak:** menanam email admin di kode/env (butuh akses deploy)
+  dan promosi otomatis (berisiko).
+- **Konsekuensi:** TODO produksi — ganti dengan penetapan admin lewat undangan
+  atau role management, sebelum dipakai banyak staf.
